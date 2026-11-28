@@ -67,7 +67,7 @@ function focusOf(req: RequestRecord, cat: string): RequestRecord {
 }
 
 function deltaOf(req: RequestRecord, prev: RequestRecord | null): RequestRecord {
-  const { prompt: _prompt, output: _output, ...out } = req
+  const { prompt: _prompt, output: _output, tps: _tps, ...out } = req
   let churn = 0
   let net = 0
   for (const c of CATS) {

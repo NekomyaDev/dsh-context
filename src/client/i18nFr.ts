@@ -181,6 +181,8 @@ export const DICT_FR = {
   'detail.actual': 'Réel {n}',
   'detail.output': 'Sortie {n}',
   'detail.cache': 'Cache {n} %',
+  'detail.tps': 'Débit {n} tok/s',
+  'detail.tpsTip': 'Jetons de sortie ÷ durée de génération (du premier jeton à l’enregistrement du message), la même base que la trace intégrée.',
   'brief.turn': 'Utilisateur',
   'brief.input': 'Entrée',
   'brief.reply': 'Réponse',

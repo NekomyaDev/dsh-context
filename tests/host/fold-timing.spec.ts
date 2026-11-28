@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, test } from 'vitest'
 import { type TimelineEvent } from '../../src/host/fold'
 import { assistantAttempt, assistantMessage, codeDispatch, codeDispatchStart, stepEnd, stepStart, toolCall, toolResult, header, userMessage } from './helpers/events'
-import { assertPlainJson, assertStable, driveTimeline, timelineDef } from './helpers/projection'
+import { assertPlainJson, assertStable, driveTimeline, requestsOf, timelineDef } from './helpers/projection'
 import { resolveBounds } from '../../src/host/config'
 import { buildTimelineHead } from '../../src/host/foldWire'
 
@@ -31,6 +31,33 @@ describe('timing — step lifecycle', () => {
       wallMs: 6_000, ttftMs: 600, genMs: 1_400, calls: 1, toolsMs: 0, toolBusyMs: 0, toolCalls: 0, tools: {},
     })
     assert.equal(state.stepStart, undefined, 'step/end consumes the pending slot')
+  })
+
+  test('the request prices the official throughput pairing', () => {
+    const full = requestsOf(driveTimeline(step(1, 10_000, 1_041, { tokenMs: 0, usage: { outputTokens: 63 } })).state)[0]
+    assert.equal(full.tps, 63 / (1_041 / 1_000))
+  })
+
+  test('a retried step prices its rate from the first attempt token, not the settled stream', () => {
+    const full = requestsOf(driveTimeline([
+      stepStart(1, { time: 1_000 }),
+      assistantAttempt(2, { stream: [chunkRec(2_000, { type: 'text-delta', text: 'x' })] }),
+      assistantMessage(3, { time: 4_000, usage: { outputTokens: 20 }, stream: [chunkRec(3_900, { type: 'text-delta', text: 'y' })] }),
+      stepEnd(4, { time: 5_000 }),
+    ]).state)[0]
+    assert.equal(full.tps, 10)
+  })
+
+  test('missing usage, a missing first token, an empty window and the head-only fold price no throughput', () => {
+    const noUsage = driveTimeline(step(4, 0, 1_000, { tokenMs: 100 })).state
+    assert.ok(!('tps' in noUsage.requests[0]))
+    const noToken = driveTimeline(step(7, 0, 1_000, { usage: { outputTokens: 5 } })).state
+    assert.ok(!('tps' in noToken.requests[0]))
+    const instant = driveTimeline(step(10, 0, 0, { tokenMs: 0, usage: { outputTokens: 5 } })).state
+    assert.ok(!('tps' in instant.requests[0]), 'a zero-length window prices no rate')
+    const head = driveTimeline(step(13, 0, 1_000, { tokenMs: 100, usage: { outputTokens: 5 } }), undefined, true).state
+    assert.ok(!('tps' in head.requests[0]), 'head-only records stay slim')
+    assert.equal(head.requests.length, 1)
   })
 
   test('steps accumulate; the pending slot prices assistant/message and step/end of the SAME step', () => {

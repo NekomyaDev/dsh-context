@@ -33,7 +33,7 @@ import {
 import { TALLY_NAME_CHARS_MAX, TALLY_NAMES_MAX, countCompaction, countInject, countModelSwitch, countStep, countTurnRuns, noteCommandCall, noteSkillName, noteTurn, pushEvent, slimSurfaceNode, trimState, type CommandStateRecord, type TimelineEvent, type TimelineState } from './foldState'
 import { agentOfInjection, applyCatalogEvent, messageOf, skillNameOf, type MessageLike } from './foldInjections'
 import { applyWorkflowEvent, askRecordOf } from './foldWorkflow'
-import { accumulateCost, addDecodeSpan, bumpToolTotals, carveWindows, durOf, ensureTiming, idleGapWindows, mergeWindows, tokenCountOf, type UsageLike } from './foldMetering'
+import { accumulateCost, addDecodeSpan, addOutputSpeed, bumpToolTotals, carveWindows, durOf, ensureTiming, idleGapWindows, mergeWindows, tokenCountOf, type UsageLike } from './foldMetering'
 
 function categoryOf(type: string, message: { source?: MessageSource } | undefined): Category {
   if (type === 'assistant/message') return 'assistant'
@@ -896,8 +896,9 @@ function applyTimelineEvent(state: TimelineState, event: TimelineEvent, bounds: 
           const streamTiming = streamTimingOf(data?.stream, event.time)
           const firstToken = stepStart.firstToken ?? streamTiming.firstToken
           if (firstToken !== undefined) {
+            const genMs = durOf(firstToken, event.time)
             timing.ttftMs += durOf(stepStart.time, firstToken)
-            timing.genMs += durOf(firstToken, event.time)
+            timing.genMs += genMs
             const decodeSpans: DecodeSpan[] = []
             let opened = false
             let cursor = firstToken
@@ -915,10 +916,7 @@ function applyTimelineEvent(state: TimelineState, event: TimelineEvent, bounds: 
               { kind: 'ttft', start: stepStart.time, end: firstToken },
               ...decodeSpans,
             ]
-            if (output !== null) {
-              timing.speedMs = (timing.speedMs ?? 0) + durOf(firstToken, event.time)
-              timing.speedTokens = (timing.speedTokens ?? 0) + output
-            }
+            if (output !== null) addOutputSpeed(timing, full, output, genMs)
             for (const span of decodeSpans) addDecodeSpan(timing, span.kind, durOf(span.start, span.end))
           }
         }

@@ -181,6 +181,8 @@ export const DICT_EN = {
   'detail.actual': 'Actual {n}',
   'detail.output': 'Output {n}',
   'detail.cache': 'Cache {n}%',
+  'detail.tps': 'Throughput {n} tok/s',
+  'detail.tpsTip': 'Output tokens ÷ generation time (first token to message commit), the same basis as the built-in trajectory.',
   'brief.turn': 'User',
   'brief.input': 'In',
   'brief.reply': 'Response',

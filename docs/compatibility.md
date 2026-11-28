@@ -49,6 +49,7 @@ Last verified: **2026-11-28** (dsh-context `0.88.0`; dsh floors `0.2.0-rc.2`, `0
 | `src/host/pricing.ts` `estimateReasoningTokens` / `estimateAnswerTokens` / `estimateCallTokens` | dsh: `packages/llm/token-meter/src/estimate.ts` — reasoning/text/tool-call arms of `estimateContent` |
 | `src/shared/fileTokens.ts` (attachment chip) | dsh: `packages/llm/llm/src/content.ts` `fileHandleText` — handle text, never bytes; the chip cannot know the resolvable-path sentence, so it is a lower bound |
 | `src/client/components/statsTiming.tsx` TPS chip | dsh: `packages/llm/llm/src/assistant-stream.ts` `assistantStreamFirstTokenTime` |
+| `src/client/components/requestDetail.tsx` per-step throughput chip | dsh: `packages/client/ui-trajectory/src/client/TrajectoryTable.tsx` `throughput` — provider output tokens ÷ (assistant/message event time − first token), one decimal, no chip when usage, the first token or a positive window is absent |
 | `src/client/headline.ts` `occupancyPercent` | dsh: `packages/client/ui-conversation/src/client/context-occupancy.ts` `contextOccupancy` — the plugin mirrors the clamped ratio and prints one decimal; kernel-internal, hence mirrored |
 | `src/client/reserve.ts` | dsh: `packages/compaction/compaction-basic/src/config.ts` — shipped defaults only (`0.8` / `65536`); a non-positive budget is refused (`TargetPressureConfigError`), so the bar paints no masks |
 

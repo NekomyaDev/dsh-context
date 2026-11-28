@@ -153,6 +153,7 @@ export function makeRequestDetail(
     kit.useLocaleTick()
     const req = props.request
     if (!req) return null
+    const tps = req.tps
     const isTurn = req.stepCount !== undefined && req.stepCount > 1
     const head = isTurn
       ? t('detail.turn', {
@@ -198,6 +199,9 @@ export function makeRequestDetail(
               : null}
             {!delta && req.prompt !== undefined && req.cacheRead !== undefined
               ? <span className="lc-detail-metric">{t('detail.cache', { n: cacheHitPercent(req.cacheRead, req.prompt) ?? '—' })}</span>
+              : null}
+            {!delta && tps !== undefined && Number.isFinite(tps)
+              ? <span className="lc-detail-metric" title={t('detail.tpsTip')}>{t('detail.tps', { n: tps.toFixed(1) })}</span>
               : null}
           </span>
         </div>

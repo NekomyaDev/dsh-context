@@ -181,6 +181,8 @@ export const DICT_DE = {
   'detail.actual': 'Tatsächlich {n}',
   'detail.output': 'Ausgabe {n}',
   'detail.cache': 'Cache {n} %',
+  'detail.tps': 'Durchsatz {n} Tok./s',
+  'detail.tpsTip': 'Ausgabe-Token ÷ Generierungszeit (erstes Token bis zum Speichern der Nachricht), dieselbe Basis wie die integrierte Trajektorie.',
   'brief.turn': 'Benutzer',
   'brief.input': 'Eingang',
   'brief.reply': 'Antwort',

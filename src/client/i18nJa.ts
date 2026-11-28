@@ -181,6 +181,8 @@ export const DICT_JA = {
   'detail.actual': '実測 {n}',
   'detail.output': '出力 {n}',
   'detail.cache': 'キャッシュ {n}%',
+  'detail.tps': 'スループット {n} tok/s',
+  'detail.tpsTip': '出力トークン ÷ 生成時間（最初のトークンからメッセージ確定まで）。組み込みの軌跡と同じ基準。',
   'brief.turn': 'ユーザー',
   'brief.input': '入力',
   'brief.reply': '応答',

@@ -52,6 +52,7 @@ const requestRecordSchema = z.object({
   skill: z.number().int().nonnegative().optional(),
   cacheRead: z.number().int().nonnegative().optional(),
   output: z.number().int().nonnegative().optional(),
+  tps: z.number().nonnegative().optional(),
   activeMs: z.number().nonnegative().optional(),
   stepCount: z.number().int().positive().optional(),
 }).strict()

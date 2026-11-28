@@ -1,4 +1,4 @@
-import type { CostBucketTotals, CostModelUsage, SessionCostUsage, TimingSpan, TimingTotals, ToolTimingTotals } from '../shared/types'
+import type { CostBucketTotals, CostModelUsage, RequestRecord, SessionCostUsage, TimingSpan, TimingTotals, ToolTimingTotals } from '../shared/types'
 import { isDeepSeekProvider } from '../shared/providers'
 import type { DecodeKind } from './logShapes'
 import type { TimelineState } from './foldState'
@@ -90,6 +90,12 @@ export function ensureTiming(st: TimelineState): TimingTotals {
     st.timing = { wallMs: 0, ttftMs: 0, genMs: 0, calls: 0, toolsMs: 0, toolBusyMs: 0, toolCalls: 0, tools: {} }
   }
   return st.timing
+}
+
+export function addOutputSpeed(timing: TimingTotals, record: RequestRecord | null, tokens: number, ms: number): void {
+  timing.speedMs = (timing.speedMs ?? 0) + ms
+  timing.speedTokens = (timing.speedTokens ?? 0) + tokens
+  if (record !== null && ms > 0) record.tps = tokens / (ms / 1_000)
 }
 
 const DECODE_FIELDS: Record<DecodeKind, { ms: 'reasoningMs' | 'textMs' | 'toolArgMs'; n: 'reasoningBlocks' | 'textBlocks' | 'toolArgBlocks' }> = {

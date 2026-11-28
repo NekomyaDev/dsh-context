@@ -181,6 +181,8 @@ export const DICT_PT = {
   'detail.actual': 'Real {n}',
   'detail.output': 'Saída {n}',
   'detail.cache': 'Cache {n}%',
+  'detail.tps': 'Taxa de transferência {n} tok/s',
+  'detail.tpsTip': 'Tokens de saída ÷ tempo de geração (do primeiro token ao registro da mensagem), a mesma base da trajetória integrada.',
   'brief.turn': 'Usuário',
   'brief.input': 'Entrada',
   'brief.reply': 'Resposta',

@@ -477,6 +477,7 @@ export interface RequestRecord extends SlimRequestRecord {
   skill?: number
   cacheRead?: number
   output?: number
+  tps?: number
   stepCount?: number
   net?: number
 }

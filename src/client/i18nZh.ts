@@ -179,6 +179,8 @@ export const DICT_ZH = {
   'detail.actual': '实际 {n}',
   'detail.output': '输出 {n}',
   'detail.cache': '缓存 {n}%',
+  'detail.tps': '吞吐率 {n} tok/s',
+  'detail.tpsTip': '输出 tokens ÷ 生成时长（首 token 到消息落库），与内置轨迹同口径。',
   'brief.turn': '用户',
   'brief.input': '输入',
   'brief.reply': '回复',
