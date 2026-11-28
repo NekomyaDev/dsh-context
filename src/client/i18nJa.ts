@@ -183,6 +183,7 @@ export const DICT_JA = {
   'detail.cache': 'キャッシュ {n}%',
   'detail.tps': 'スループット {n} tok/s',
   'detail.tpsTip': '出力トークン ÷ 生成時間（最初のトークンからメッセージ確定まで）。組み込みの軌跡と同じ基準。',
+  'detail.durationTip': 'ステップ開始から終了まで（意思決定や回答の待ち時間を除く）。',
   'brief.turn': 'ユーザー',
   'brief.input': '入力',
   'brief.reply': '応答',

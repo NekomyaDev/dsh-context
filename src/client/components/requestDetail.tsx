@@ -26,7 +26,7 @@ export function makeRequestDetail(
   StackedBar: (props: StackedBarProps) => ReactElement,
   Legend: (props: LegendProps) => ReactElement,
 ): ComponentType<RequestDetailProps> {
-  const { t, fmt, fmtTime, eventLabel, eventAt } = kit
+  const { t, fmt, fmtDuration, fmtTime, eventLabel, eventAt } = kit
 
   function BriefRow(props: {
     tag: string
@@ -154,6 +154,7 @@ export function makeRequestDetail(
     const req = props.request
     if (!req) return null
     const tps = req.tps
+    const activeMs = req.activeMs
     const isTurn = req.stepCount !== undefined && req.stepCount > 1
     const head = isTurn
       ? t('detail.turn', {
@@ -202,6 +203,9 @@ export function makeRequestDetail(
               : null}
             {!delta && tps !== undefined && Number.isFinite(tps)
               ? <span className="lc-detail-metric" title={t('detail.tpsTip')}>{t('detail.tps', { n: tps.toFixed(1) })}</span>
+              : null}
+            {!delta && !isTurn && activeMs !== undefined && activeMs > 0
+              ? <span className="lc-detail-metric" title={t('detail.durationTip')}>{t('tip.duration', { n: fmtDuration(activeMs) })}</span>
               : null}
           </span>
         </div>

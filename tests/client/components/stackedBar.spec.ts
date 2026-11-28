@@ -509,7 +509,7 @@ describe('RequestDetail header', () => {
 
   test('step detail: title, time, usage chips, per-category chips', async () => {
     const m = await mount(h(RequestDetail, {
-      request: req({ prompt: 1000, output: 120, cacheRead: 500, tps: 60.5 }),
+      request: req({ prompt: 1000, output: 120, cacheRead: 500, tps: 60.5, activeMs: 45_200 }),
     }))
     const head = text(query(m.container, '.lc-detail-head'))
     assert.ok(head.includes('Turn 1 · Step 1'))
@@ -522,6 +522,9 @@ describe('RequestDetail header', () => {
     assert.ok(head.includes('Throughput 60.5 tok/s'), 'one decimal, the built-in trajectory pairing')
     const rate = queryAll(m.container, '.lc-detail-head .lc-detail-metric').find(el => text(el).startsWith('Throughput'))
     assert.ok(rate?.getAttribute('title')?.includes('Output tokens ÷ generation time'), 'the chip explains its figure')
+    assert.ok(head.includes('Duration 45.2s'), 'the step duration in the shared formatter')
+    const duration = queryAll(m.container, '.lc-detail-head .lc-detail-metric').find(el => text(el).startsWith('Duration'))
+    assert.ok(duration?.getAttribute('title')?.includes('Step start to end'), 'the duration chip names its step window')
     const ms = await mount(h(RequestDetail, { request: req({}), stepsOf: (turn) => (turn === 1 ? 7 : 1) }))
     assert.ok(text(query(ms.container, '.lc-detail-head')).includes('Turn 1 · Step 1 of 7'))
     await ms.unmount()
@@ -555,14 +558,19 @@ describe('RequestDetail header', () => {
     const m3 = await mount(h(RequestDetail, { request: req({ output: 120, tps: Number.NaN }) }))
     assert.ok(!text(query(m3.container, '.lc-detail-head')).includes('Throughput'), 'a non-finite rate degrades to no chip')
     await m3.unmount()
+
+    const m4 = await mount(h(RequestDetail, { request: req({ activeMs: 0 }) }))
+    assert.ok(!text(query(m4.container, '.lc-detail-head')).includes('Duration'), 'a zero-length step shows no duration')
+    await m4.unmount()
   })
 
   test('turn aggregate shows the step count and the last-step tag; stepCount 1 stays a step', async () => {
-    const m = await mount(h(RequestDetail, { request: req({ turn: 2, stepCount: 3, output: 120, tps: 60.5 }) }))
+    const m = await mount(h(RequestDetail, { request: req({ turn: 2, stepCount: 3, output: 120, tps: 60.5, activeMs: 90_000 }) }))
     const head = text(query(m.container, '.lc-detail-head'))
     assert.ok(head.includes('Turn 2 · 3 steps'))
     assert.ok(head.includes('Last Step'))
     assert.ok(head.includes('Throughput 60.5 tok/s'), 'the aggregate row keeps the last step\'s rate')
+    assert.ok(!head.includes('Duration'), 'the aggregate row mixes last-step figures only, so no step duration')
     await m.unmount()
 
     const m2 = await mount(h(RequestDetail, { request: req({ turn: 2, step: 4, stepCount: 1 }) }))
@@ -609,13 +617,14 @@ describe('RequestDetail header', () => {
 
 describe('RequestDetail delta mode', () => {
   test('signed deltas vs the previous record: net chip, signed chips, no usage chips', async () => {
-    const request = req({ system: 150, tools: 200, user: 250, inject: 0, assistant: 300, tool: 350, total: 1250, prompt: 900, tps: 60.5 })
+    const request = req({ system: 150, tools: 200, user: 250, inject: 0, assistant: 300, tool: 350, total: 1250, prompt: 900, tps: 60.5, activeMs: 45_200 })
     const prev = req({ ...FULL, inject: 0 })
     const m = await mount(h(RequestDetail, { request, prev }))
     const head = text(query(m.container, '.lc-detail-head'))
     assert.ok(head.includes('Delta'), 'delta tag shown')
     assert.ok(!head.includes('Actual'), 'usage chips drop out in delta mode')
     assert.ok(!head.includes('Throughput'), 'delta mode carries no rate')
+    assert.ok(!head.includes('Duration'), 'delta mode carries no duration')
     const metric = query(m.container, '.lc-detail-metric')
     assert.ok(text(metric).includes('Δ 0'))
     assert.ok(!metric.className.includes('lc-detail-metric-up'))

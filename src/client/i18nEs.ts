@@ -183,6 +183,7 @@ export const DICT_ES = {
   'detail.cache': 'Caché {n}%',
   'detail.tps': 'Rendimiento {n} tok/s',
   'detail.tpsTip': 'Tokens de salida ÷ tiempo de generación (del primer token al registro del mensaje), la misma base que la traza integrada.',
+  'detail.durationTip': 'Del inicio al fin del paso, excluyendo las esperas de tus decisiones o respuestas.',
   'brief.turn': 'Usuario',
   'brief.input': 'Entrada',
   'brief.reply': 'Respuesta',

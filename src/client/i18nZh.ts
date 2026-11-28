@@ -181,6 +181,7 @@ export const DICT_ZH = {
   'detail.cache': '缓存 {n}%',
   'detail.tps': '吞吐率 {n} tok/s',
   'detail.tpsTip': '输出 tokens ÷ 生成时长（首 token 到消息落库），与内置轨迹同口径。',
+  'detail.durationTip': '步骤开始到结束，扣除等待你决策或回答的时间。',
   'brief.turn': '用户',
   'brief.input': '输入',
   'brief.reply': '回复',

@@ -183,6 +183,7 @@ export const DICT_EN = {
   'detail.cache': 'Cache {n}%',
   'detail.tps': 'Throughput {n} tok/s',
   'detail.tpsTip': 'Output tokens ÷ generation time (first token to message commit), the same basis as the built-in trajectory.',
+  'detail.durationTip': 'Step start to end, excluding waits for your decisions or answers.',
   'brief.turn': 'User',
   'brief.input': 'In',
   'brief.reply': 'Response',

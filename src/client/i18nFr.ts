@@ -183,6 +183,7 @@ export const DICT_FR = {
   'detail.cache': 'Cache {n} %',
   'detail.tps': 'Débit {n} tok/s',
   'detail.tpsTip': 'Jetons de sortie ÷ durée de génération (du premier jeton à l’enregistrement du message), la même base que la trace intégrée.',
+  'detail.durationTip': 'Du début à la fin de l’étape, hors attentes de vos décisions ou réponses.',
   'brief.turn': 'Utilisateur',
   'brief.input': 'Entrée',
   'brief.reply': 'Réponse',
